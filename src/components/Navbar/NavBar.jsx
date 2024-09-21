@@ -2,11 +2,21 @@ import React, { useContext, useState } from 'react'
 import './Navbar.css'
 import { FaSearch } from "react-icons/fa";
 import { FaBasketShopping } from "react-icons/fa6";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { StoreContext } from '../Context/StoreContext';
+// import { ImProfile } from "react-icons/im";
+import { IoMdLogOut } from "react-icons/io";
+import { FaShoppingBag } from "react-icons/fa";
 function NavBar({setshowLogin}) {
     const [menu,setmenu]=useState('home')
-    const {getTotalCartAmount}=useContext(StoreContext)
+
+    const {getTotalCartAmount,token,setToken}=useContext(StoreContext)
+    const navigate = useNavigate()
+    const logout = ()=>{
+   localStorage.removeItem("token");
+   setToken("")
+ navigate("/")
+    }
   return (
     <div className='navbar'>
         <Link to={'/'}>        <h1 className='tomoto'>Tomoto</h1>
@@ -23,7 +33,15 @@ function NavBar({setshowLogin}) {
   <Link to='/cart'><h3><FaBasketShopping className='faba'/></h3>  </Link>
 <div className={getTotalCartAmount()===0?"":"dot"}></div>
 </div>
-<button onClick={()=>setshowLogin(true)}>sign in</button>
+{!token?<button onClick={()=>setshowLogin(true)}>sign in</button>
+: <div className='navbar-profile'>
+  <img className='icon' src="https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-profile-glyph-black-icon-png-image_691589.jpg" alt="" />
+  <ul className='nav-profile-dropdown'>
+    <li onClick={()=>navigate('/myorders')}><FaShoppingBag/><p>Order</p></li>
+    <hr />
+    <li onClick={logout}><IoMdLogOut/><p>Logout</p></li>
+  </ul>
+</div> }
         </div>
     </div>
   )
